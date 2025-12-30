@@ -23,6 +23,9 @@ x3 = x2.sum()
 print(x3)
 
 #Q6. Har column ke missing values ka percentage calculate karo.
+x4 =( df.isnull().sum()/len(df))*100
+print(x4)
+
 
 #Q7. Dataset me total duplicate rows kitni hain?
 x5 = df.duplicated().sum()
@@ -34,24 +37,38 @@ x6 = df.drop_duplicates()
 print(x6.shape)
 
 #Q9. Numeric columns aur categorical columns ko identify karo.
-x7 = df.describe()
+x7 = df.select_dtypes(include="number").columns
 print(x7)
-
-x8 = df.value_counts()
+x8 = df.select_dtypes(include="object").columns
 print(x8)
+
 
 '''Q10. Numeric columns ke missing values ko
      mean ya median se fill karo'''
-print(df[x7].fillna(df[x7].mean()))
+for col in x7:
+    if df[col].isnull().sum()>0:
+        x = df[col].mean()
+        df[col].fillna(x,inplace = True)
+        
+print(df.isnull().sum())
+
 
 '''Q11. Categorical columns ke missing values ko
      mode se fill karo'''
-print(df[x7].fillna(df[x7].mean()))
+for col in x8:
+    if df[col].isnull().sum()>0:
+        x = df[col].mean()
+        df[col].fillna(x,inplace = True)
+        
+print(df.isnull().sum())
 
 '''Q12. Verify karo ki ab dataset me
      koi missing value nahi bachi hai.'''
+print(df.isnull().sum())
+
      
 #Q13. Heart disease prediction ka target column kaunsa hai?
+#Ans."Heart disease"
 #Q14. Target column ka distribution find karo
      #(Heart Disease = 0 aur 1 ka count).
 '''Q15. Patients ki:
@@ -69,44 +86,28 @@ print(x16)
 '''Q16. Gender vs Heart Disease ka analysis karo:
      - Male aur Female count
      - Kis gender me heart disease zyada hai?'''
-male = 0
-female = 0
-for i in df["Sex"]:
-    if i == 1:
-        female+=1
-    else:
-        male+=1
-print(female)
-print(male)
+gender_heart = pd.crosstab(df['Sex'],df['Heart Disease'])
+print(gender_heart)
 
 #Q17. Age ke basis par Heart Disease ka trend analyze karo.
-age = df["Age"]
-Heart_Disease = df["Heart Disease"]
-unique_age = age.unique
-count= 0
-for x in age:
-    for y in Heart_Disease:
-        if x > 50 or y == "Present":
-            count+=1
-        else:
-            count+=1
-print(count)
-            
-        
-    
+Age_heart = df.groupby("Heart Disease")["Age"].mean()
+print(Age_heart)
 
-
-        
-        
-        
-        
-        
-    
-    
     
 '''Q18. Cholesterol ke basis par check karo
      ki high cholesterol walon me
      heart disease zyada hai ya nahi.'''
+     
+Heart_disease = df.groupby("Heart Disease")['Cholesterol'].mean()
+print(Heart_disease)
+
+#Q19.Blood pressure inka heart disease se relation analyze kro
+blood_pressure = df.groupby("Heart Disease")["BP"].mean()
+print(blood_pressure)
+
+x18 = x6.to_csv("clean_data.csv", index=False)
+
+
      
     
 
